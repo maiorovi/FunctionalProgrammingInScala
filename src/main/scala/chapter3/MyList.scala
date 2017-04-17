@@ -26,15 +26,13 @@ object MyList {
     case Cons(head, tail) => Cons(newHead, tail)
   }
 
-  def sum(xs:MyList[Int]):Int = xs  match {
-    case MyNil => 0
-    case Cons(head, tail) => head + sum(tail)
-  }
+  def sum(xs:MyList[Int]):Int = myFold(xs, 0)(_ + _)
 
-  def product(xs:MyList[Int]):Int = xs match {
-    case MyNil =>1
-    case Cons(0, tail) => 0
-    case Cons(head,tail) => head * product(tail)
+  def product(xs:MyList[Int]):Int = myFold(xs, 1)(_ * _)
+
+  def myFold[A,B](xs:MyList[A], z:B)(f: (A,B) => B):B = xs match {
+    case Cons(y, ys) => f(y, myFold(ys, z)(f))
+    case MyNil => z
   }
 
   def tail[A](xs:MyList[A]):MyList[A] = xs match {
