@@ -96,4 +96,10 @@ class MyListTest extends FunSuite with BeforeAndAfter {
     }
   }
 
+  test("appends first list to second list") {
+    assertResult(Cons(1, Cons(2, Cons(3, Cons(4, Cons(5, MyNil)))))) {
+      MyList.append(list, Cons(4, Cons(5, MyNil)))
+    }
+  }
+
 }
