@@ -84,4 +84,16 @@ class MyListTest extends FunSuite with BeforeAndAfter {
     }
   }
 
+  test("reverses list") {
+    assertResult(Cons(3, Cons(2, Cons(1, MyNil)))) {
+      MyList.reverse(list)
+    }
+  }
+
+  test("reverses list using fold left") {
+    assertResult(Cons(3, Cons(2, Cons(1, MyNil)))) {
+      MyList.reverseUsingFoldLeft(list)
+    }
+  }
+
 }

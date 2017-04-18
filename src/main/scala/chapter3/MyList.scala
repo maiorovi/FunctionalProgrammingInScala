@@ -9,6 +9,24 @@ case class Cons[A](head: A, tail: MyList[A]) extends MyList[A]
 case object MyNil extends MyList[Nothing]
 
 object MyList {
+  //TODO: 3.15
+
+  def foldRightUsingMyFoldLeft[A,B](xs:MyList[A], z:B)(f: (A, B) => B):B = myFoldLeft(reverse(xs), z)(f)
+
+  def reverse[A](xs: MyList[A]): MyList[A] = {
+    @tailrec
+    def loop(ys:MyList[A], reversed:MyList[A]):MyList[A] = ys match {
+      case Cons(z, zs) => loop(zs, Cons(z,reversed))
+      case MyNil => reversed
+    }
+
+    loop(xs, MyNil)
+  }
+
+  def appendViaFoldLeft[A](xs:MyList[A], ys:MyList[A]):MyList[A] = myFoldRight(xs, ys)((x, acc) => Cons(x, acc))
+
+  def reverseUsingFoldLeft[A,B](xs: MyList[A]):MyList[A] = myFoldLeft(xs, MyNil:MyList[A])((x, acc) => Cons(x, acc))
+
   def append[A](xs: MyList[A], ys: MyList[A]): MyList[A] = xs match {
     case MyNil => ys
     case Cons(z, zs) => Cons(z, append(zs, ys))
