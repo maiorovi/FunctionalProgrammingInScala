@@ -9,8 +9,22 @@ case class Cons[A](head: A, tail: MyList[A]) extends MyList[A]
 case object MyNil extends MyList[Nothing]
 
 object MyList {
-  //TODO: 3.15
+  def addOneToAll(xs: MyList[Int]): MyList[Int] = map(xs)( _ + 1 )
 
+  def map[A, B](xs:MyList[A])(f: A => B):MyList[B] =  foldRightUsingMyFoldLeft(xs, MyNil:MyList[B])((x, acc) => Cons(f(x), acc))
+
+  def doubleToString(xs:MyList[Double]):MyList[String] = foldRightUsingMyFoldLeft(xs, MyNil:MyList[String])((x, acc) => Cons(x.toString, acc) )
+
+  def filter[A](as:MyList[A])(f: A => Boolean): MyList[A] =
+    foldRightUsingMyFoldLeft(as, MyNil: MyList[A])((a, acc) => if (f(a)) Cons(a, acc) else acc)
+
+  def filterViaFlatMap[A](as: MyList[A])(f: A => Boolean): MyList[A] =
+    flatMap(as)( elem => if (f(elem)) Cons(elem, MyNil) else MyNil)
+
+  def flatMap[A, B](xs:MyList[A])(f: A => MyList[B]):MyList[B] =
+    foldRightUsingMyFoldLeft(xs, MyNil:MyList[B])((x, acc) => append(f(x), acc))
+
+  //TODO: 3.15
   def foldRightUsingMyFoldLeft[A,B](xs:MyList[A], z:B)(f: (A, B) => B):B = myFoldLeft(reverse(xs), z)(f)
 
   def reverse[A](xs: MyList[A]): MyList[A] = {

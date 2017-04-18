@@ -102,4 +102,22 @@ class MyListTest extends FunSuite with BeforeAndAfter {
     }
   }
 
+  test("adds one to all elements of a list") {
+    assertResult((Cons(2, Cons(3, Cons(4, MyNil))))) {
+      MyList.addOneToAll(list)
+    }
+  }
+
+  test("convertes doubles list to strings list") {
+    assertResult(Cons("1.0", Cons("2.0", Cons("3.0", MyNil)))) {
+      MyList.doubleToString(Cons(1d, Cons(2d, Cons(3d, MyNil))))
+    }
+  }
+
+  test("flat maps list") {
+    assertResult(Cons(1, Cons(1, Cons(2, Cons(2, Cons(3, Cons(3, MyNil))))))) {
+      MyList.flatMap(list)(elem => Cons(elem, Cons(elem, MyNil)))
+    }
+  }
+
 }
