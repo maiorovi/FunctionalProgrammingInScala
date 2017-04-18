@@ -78,4 +78,10 @@ class MyListTest extends FunSuite with BeforeAndAfter {
     }
   }
 
+  test("computes length of a list") {
+    assertResult(3) {
+      MyList.length(list)
+    }
+  }
+
 }
