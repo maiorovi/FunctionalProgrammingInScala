@@ -21,5 +21,11 @@ class TreeTest extends FunSuite with BeforeAndAfter {
     }
   }
 
+  test("find maximum element in a tree") {
+    assertResult(4) {
+      Tree.maximum(tree)
+    }
+  }
+
 
 }

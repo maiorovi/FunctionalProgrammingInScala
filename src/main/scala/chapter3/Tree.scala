@@ -23,4 +23,21 @@ object Tree {
     loop(List(tree), 0)
   }
 
+  def maximum(tree:Tree[Int]):Int = tree match {
+    case Leaf(value) => value
+    case Node(left, right) => Math.max(maximum(left), maximum(right))
+  }
+
+  def maximumTailRec(tree:Tree[Int]):Int = {
+    @tailrec
+    def loop(trees:List[Tree[Int]], max:Int):Int = trees match {
+      case Nil => max
+      case Leaf(value)::rs => loop(rs, Math.max(value, max))
+      case Node(left, right)::rs => loop(left::right::rs, max)
+    }
+
+    loop(List(tree), Integer.MIN_VALUE)
+  }
+
+
 }
