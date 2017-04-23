@@ -50,5 +50,14 @@ object Tree {
     case Node(left,right) => Math.max(depth(left)+1, depth(right)+1)
   }
 
+  def fold[A,B](z:B)(tree:Tree[A])(g: A => B)(f: (B,B) => B):B = tree match {
+    case Leaf(value) => g(value)
+    case Node(left, right) => f(fold(z)(left)(g)(f), fold(z)(right)(g)(f))
+  }
 
+  def sum(tree:Tree[Int]):Int = fold(0)(tree)(x => x)(_ + _)
+
+  def maximumFold(tree:Tree[Int]):Int = fold(Integer.MIN_VALUE)(tree)(x => x)(_ max _)
+
+  def sizeFold[A](tree:Tree[A]) = fold(0)(tree)(x => 1)(1 + _ + _)
 }

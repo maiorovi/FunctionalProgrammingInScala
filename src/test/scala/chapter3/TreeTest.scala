@@ -19,11 +19,19 @@ class TreeTest extends FunSuite with BeforeAndAfter {
     assertResult(7) {
       Tree.sizeTailRec(tree)
     }
+
+    assertResult(7) {
+      Tree.sizeFold(tree)
+    }
   }
 
   test("find maximum element in a tree") {
     assertResult(4) {
       Tree.maximum(tree)
+    }
+
+    assertResult(4) {
+      Tree.maximumFold(tree)
     }
   }
 
@@ -41,6 +49,12 @@ class TreeTest extends FunSuite with BeforeAndAfter {
   test("test maps a tree") {
     assertResult(Node(Node(Leaf(2), Leaf(4)), Node(Leaf(6), Leaf(8)))) {
       Tree.map(tree, (x: Int) => x * 2)
+    }
+  }
+
+  test("sums a tree") {
+    assertResult(10) {
+      Tree.sum(tree)
     }
   }
 
