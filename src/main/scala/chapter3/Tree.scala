@@ -7,6 +7,12 @@ case class Leaf[A](value:A) extends Tree[A]
 case class Node[A](left: Tree[A], right: Tree[A]) extends Tree[A]
 
 object Tree {
+  def map[A, B](tree: Tree[A], f: A => B): Tree[B] = tree match {
+    case Leaf(value) => Leaf(f(value))
+    case Node(left,right) => Node(map(left, f), map(right, f))
+  }
+
+
   def size[A](tree: Tree[A]): Int = tree match {
     case Leaf(value) => 1
     case Node(l, r) => 1 + size(l) + size(r)
@@ -37,6 +43,11 @@ object Tree {
     }
 
     loop(List(tree), Integer.MIN_VALUE)
+  }
+
+  def depth(tree:Tree[Int]):Int = tree match {
+    case Leaf(value) => 0
+    case Node(left,right) => Math.max(depth(left)+1, depth(right)+1)
   }
 
 
