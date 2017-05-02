@@ -35,7 +35,7 @@ object Either {
   }
 
 
-  def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] = traverse(es)(e => e)
+  def sequence1[E, A](es: List[Either[E, A]]): Either[E, List[A]] = traverse(es)(e => e)
 
   def traverse[E, A, B](as:List[A])(f: A => Either[E,B]): Either[E, List[B]] = as match {
     case h::t => f(h).map2(traverse(t)(f))((elem, list) => elem :: list)
