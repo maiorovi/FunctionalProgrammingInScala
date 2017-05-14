@@ -1,0 +1,95 @@
+package chapter6
+
+import chapter6.RNG.Rand
+
+import scala.collection.mutable
+
+
+trait RNG {
+
+  def nextInt: (Int, RNG)
+
+}
+
+case class SimpleRNG(seed: Long) extends RNG {
+  override def nextInt: (Int, RNG) = {
+    val newSeed = (seed * 0x5DECE66DL + 0xBL) & 0xFFFFFFFFFFFFL
+    val newRng = SimpleRNG(newSeed)
+    val n = (newSeed >>> 16).toInt
+    (n, newRng)
+  }
+}
+
+
+object RNG {
+  def double(rng: RNG): (Double, RNG) = {
+    val (i1, newRng) = rng.nextInt
+
+    (i1.toDouble / Integer.MAX_VALUE.toDouble ,newRng)
+  }
+
+  def intDouble(rng:RNG): ((Int, Double), RNG) = {
+    val (i1, rng1) = rng.nextInt
+    val (d1, rng2) = double(rng1)
+
+    ((i1, d1), rng2)
+  }
+
+  def doubleInt(rng:RNG): ((Double, Int), RNG) = {
+    val ((i1, d1), rng2) = intDouble(rng)
+    ((d1, i1), rng2)
+  }
+
+  def double3(rng: RNG): ((Double, Double, Double), RNG) = {
+    val (d1, rng1) = double(rng)
+    val (d2, rng2) = double(rng1)
+    val (d3, rng3) = double(rng2)
+
+    ((d1, d2, d3), rng3)
+  }
+
+  def ints(count: Int)(rng: RNG): (List[Int], RNG) = {
+    var i = 0
+    var currentRng = rng
+    val xs = mutable.MutableList[Int]()
+
+    while (i < count) {
+      val (i1, tmpRng) = rng.nextInt
+      xs += i1
+      currentRng = tmpRng
+      i += 1
+    }
+
+    (xs.toList, currentRng)
+  }
+
+  def nonNegativeInt(rng: RNG): (Int, RNG) = {
+    val (i1, rng2) = rng.nextInt
+
+    if (i1 == Integer.MIN_VALUE) {
+      (0 ,rng2)
+    } else {
+      (Math.abs(i1), rng2)
+    }
+  }
+
+  type Rand[+A] = RNG => (A, RNG)
+
+  def nonNegativeEven: Rand[Int] = map(nonNegativeInt)(i => i - i % 2)
+
+  def unit[A](a: A): Rand[A] = rng => (a, rng)
+
+  def map[A,B](s:Rand[A])(f:A => B): Rand[B] = rng => {
+    val (a, rng2) = s(rng)
+    (f(a), rng2)
+  }
+
+
+  def randomPair(rng: RNG) : ((Int, Int), RNG) = {
+    val (i1, rng2) = rng.nextInt
+    val (i2, rng3) = rng2.nextInt
+
+    ((i1, i2), rng3)
+  }
+
+}
