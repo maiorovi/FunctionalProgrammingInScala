@@ -22,6 +22,9 @@ case class SimpleRNG(seed: Long) extends RNG {
 
 
 object RNG {
+
+  def int:Rand[Int] = _.nextInt
+
   def double(rng: RNG): (Double, RNG) = {
     val (i1, newRng) = rng.nextInt
 
@@ -83,6 +86,20 @@ object RNG {
     val (a, rng2) = s(rng)
     (f(a), rng2)
   }
+
+  def doubleWithMap:Rand[Double] = map(_.nextInt)(i => i.toDouble / Integer.MAX_VALUE.toDouble)
+
+  def map2[A,B,C](ra:Rand[A], rb: Rand[B])(f: (A,B) => C):Rand[C] = rng => {
+    val (a, rngA) = ra(rng)
+    val (b, rngB) = rb(rngA)
+
+    (f(a,b), rngB)
+  }
+
+  def both[A,B](ra:Rand[A], rb: Rand[B]):Rand[(A,B)] = map2(ra,rb)((_, _))
+
+  def randIntDouble: Rand[(Double,Int)] = both(double, int)
+  def randDoubleInt: Rand[(Int, Double)] = both(int, double(_))
 
 
   def randomPair(rng: RNG) : ((Int, Int), RNG) = {
