@@ -102,11 +102,27 @@ object RNG {
   def randDoubleInt: Rand[(Int, Double)] = both(int, double(_))
 
 
+  def sequence[A](xs:List[Rand[A]]):Rand[List[A]] = xs.foldRight(unit(List[A]()))((x, acc) => map2(x, acc)(_ :: _))
+
+  def intsViaSequence(count: Int)(rng: RNG): Rand[List[Int]] = sequence(List.fill(count)(int))
+
   def randomPair(rng: RNG) : ((Int, Int), RNG) = {
     val (i1, rng2) = rng.nextInt
     val (i2, rng3) = rng2.nextInt
 
     ((i1, i2), rng3)
   }
+
+  def flatMap[A,B](ra:Rand[A])(g: A => Rand[B]):Rand[B] = rng => {
+    val (a, rng1) = ra(rng)
+    g(a)(rng1)
+  }
+
+  def mapViaFlatMap[A,B](ra:Rand[A])(f: A => B):Rand[B] = flatMap(ra)(a => (rng => (f(a),rng)))
+
+  def map2ViaFlatMap[A,B,C](ra:Rand[A], rb:Rand[B])(f: (A,B) => C):Rand[C] = flatMap(ra)(a => {
+    flatMap(rb)(b => (rng => (f(a,b), rng)))
+  })
+
 
 }
