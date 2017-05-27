@@ -45,5 +45,13 @@ class RNGTest extends FunSuite with BeforeAndAfter with MockFactory {
     RNG.ints(5)(mockedRng)._1 shouldBe List(5,5,5,5,5)
   }
 
+  test("simulate machine test") {
+    val machine = Machine(true, 15, 0)
+
+    val actions = List(Coin, Turn)
+
+    State.simulateMachine(actions)(machine) shouldBe ((Machine(true, 14, 1), (1, 14)))
+  }
+
 
 }

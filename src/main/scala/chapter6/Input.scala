@@ -17,11 +17,11 @@ case class State[S, +A](run: S => (A, S)) {
 
   def map[B](f: A => B): State[S, B] = flatMap(value => State.unit(f(value)))
 
-  def map2[B, C](sb: State[S, B])(f: (A, B) => C): State[S, C] = flatMap(v1 => map(v2 => f(v1, v2)))
+  def map2[B, C](sb: State[S, B])(f: (A, B) => C): State[S, C] = flatMap(v1 => sb.map(v2 => f(v1, v2)))
 
-  def flatMap[B](f: A => State[S, B]): State[S, B] = f((state: A) => {
-    val (value, newState) = run(state)
-    value
+  def flatMap[B](f: A => State[S, B]): State[S, B] = State(s => {
+    val (a, s1) = run(s)
+    f(a).run(s1)
   })
 
 }
@@ -40,12 +40,7 @@ object State {
     }
   }
 
-  def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = {
-    State( machine => {
-      inputs.foreach(inp => update(inp)(machine))
-      ((machine.candies, machine.coins),machine)
-    } )
-  }
+  def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = ???
 
   def unit[S, A](a: A): State[S, A] = State(state => (a, state))
 
