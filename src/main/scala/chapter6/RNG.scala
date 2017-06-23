@@ -76,6 +76,12 @@ object RNG {
     }
   }
 
+  def boolean(rng:RNG):(Boolean, RNG) = {
+    val (newInt, newRng) = rng.nextInt
+
+    if (newInt % 2 == 0) (true, newRng) else (false, newRng)
+  }
+
   type Rand[+A] = RNG => (A, RNG)
 
   def nonNegativeEven: Rand[Int] = map(nonNegativeInt)(i => i - i % 2)
